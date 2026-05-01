@@ -515,7 +515,7 @@ static int proc_pid_schedstat(struct seq_file *m, struct pid_namespace *ns,
 		seq_puts(m, "0 0 0\n");
 	else
 		seq_printf(m, "%llu %llu %lu\n",
-		   (unsigned long long)task->se.sum_exec_runtime,
+		   (unsigned long long)tsk_seruntime(task),
 		   (unsigned long long)task->sched_info.run_delay,
 		   task->sched_info.pcount);
 
@@ -1788,7 +1788,7 @@ static int proc_exe_link(struct dentry *dentry, struct path *exe_path)
 	exe_file = get_task_exe_file(task);
 	put_task_struct(task);
 	if (exe_file) {
-		*exe_path = exe_file->f_path;
+		*exe_path = *file_user_path(exe_file);
 		path_get(&exe_file->f_path);
 		fput(exe_file);
 		return 0;
